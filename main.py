@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 OBJECTS_COUNT = 5
 
 
-def chrome_configuration(useragent_name='tester', headless=True):
+def chrome_configuration(useragent_name='tester', headless=True) -> webdriver:
     """Функция для конфигурации браузера Chrome."""
     ChromeOptions = webdriver.ChromeOptions()
     # Отключаем все расширения Хрома
@@ -36,7 +36,7 @@ def chrome_configuration(useragent_name='tester', headless=True):
     return browser
 
 
-def parse_names_and_prices(browser, to_search):
+def parse_names_and_prices(browser, to_search) -> str:
     """Базовая парсинговая функция возвращающая имя и цены."""
     # запсукаем бразер с сайтом пробахилы.рф
     browser.get("https://xn--80abwmlfh7b4c.xn--p1ai/")
@@ -60,6 +60,7 @@ def parse_names_and_prices(browser, to_search):
         By.TAG_NAME,
         "div",
     )
+    result = [0] * OBJECTS_COUNT
     for counter in range(OBJECTS_COUNT):
         current_item = items[counter]
         item_name = current_item.find_element(
@@ -70,10 +71,17 @@ def parse_names_and_prices(browser, to_search):
             By.XPATH,
             f"/html/body/main/div/div/div/div[3]/div[2]/div[{counter + 1}]/div[2]/form/div[3]/div[1]"
         )
-        print('{:100} = {:10}'.format(item_name.text, item_price.text))
+        result[counter] = (item_name.text, item_price.text)
+    return result
 
 
 if __name__ == "__main__":
     browser = chrome_configuration()
-    parse_names_and_prices(browser, 'Перчатки')
-    parse_names_and_prices(browser, 'Игла')
+    gloves_result = parse_names_and_prices(browser, 'Перчатки')
+    shapes_result = parse_names_and_prices(browser, 'Игла')
+
+    for r in gloves_result:
+        print(r)
+
+    for r in shapes_result:
+        print(r)
