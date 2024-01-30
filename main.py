@@ -8,13 +8,18 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 OBJECTS_COUNT = 5
 
-
-browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 ChromeOptions = webdriver.ChromeOptions()
 # Отключаем все расширения Хрома
 ChromeOptions.add_argument("--disable-extensions")
 # Отключаем звук в браузере
 ChromeOptions.add_argument("--mute-audio")
+# Браузер работает в фоновом режиме
+ChromeOptions.add_argument("headless")
+
+browser = webdriver.Chrome(
+    service=ChromeService(ChromeDriverManager().install()),
+    options=ChromeOptions,
+)
 
 # Обход блокировки парсинга
 browser.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
@@ -24,7 +29,7 @@ browser.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
           navigator.__proto__ = newProto
           """
     })
-
+# запсукаем бразер с сайтом пробахилы.рф
 browser.get("https://xn--80abwmlfh7b4c.xn--p1ai/")
 find_form = browser.find_element(
     By.XPATH,
@@ -56,4 +61,4 @@ for counter in range(OBJECTS_COUNT):
         By.XPATH,
         f"/html/body/main/div/div/div/div[3]/div[2]/div[{counter + 1}]/div[2]/form/div[3]/div[1]"
     )
-    print(item_name.text, item_price.text)
+    print('{:100} = {:10}'.format(item_name.text, item_price.text))
