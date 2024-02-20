@@ -1,9 +1,8 @@
-from parsers.probahily_rf import create_chrome_browser, parse_names_and_prices
+from parsers.probahily_rf import parse_names_and_prices
 
 if __name__ == '__main__':
     names_to_search = input('Что найти?')
     counts_to_search = int(input('Сколько результатов вернуть?'))
-    browser = create_chrome_browser()
     results = parse_names_and_prices(
         to_search=names_to_search,
         return_items_count=counts_to_search
