@@ -18,7 +18,7 @@ class AveronParser(Parser):
     def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
         """Базовая парсинговая функция возвращающая наименования и цены."""
         # запсукаем бразер с сайтом пробахилы.рф
-        self.browser.get(SITE_URL)
+        self.browser.get(self.site_url)
         # ищем форму поиска и вводим наименование
         find_button = self.browser.find_element(
             By.XPATH,
@@ -53,7 +53,7 @@ class AveronParser(Parser):
                 "div",
             )
         except selenium.common.exceptions.NoSuchElementException:
-            self.last_results = {to_search: 'Такого наименования нет на сайте'}
+            self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
             return
 
         for counter in range(1, return_items_count + 1):
