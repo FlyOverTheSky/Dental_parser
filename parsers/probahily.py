@@ -49,18 +49,20 @@ class ProbahilyParser(Parser):
         except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.TimeoutException):
             self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
             return
-        # создаем массив с результатми поиска
+        # создаем словарь с результатми поиска
         result = {}
-        #
-        for counter in range(return_items_count):
-            current_item = items[counter]
-            current_item_name = current_item.find_element(
+
+        # проходимся по items и формируем словарь для вывода
+        for ordinal_number, item in enumerate(items):
+            if ordinal_number == return_items_count:
+                break
+            current_item_name = item.find_element(
                 By.XPATH,
-                f"/html/body/main/div/div/div/div[3]/div[2]/div[{counter + 1}]/a/span[2]/span[1]"
+                f"/html/body/main/div/div/div/div[3]/div[2]/div[{ordinal_number + 1}]/a/span[2]/span[1]"
             )
-            current_item_price = current_item.find_element(
+            current_item_price = item.find_element(
                 By.XPATH,
-                f"/html/body/main/div/div/div/div[3]/div[2]/div[{counter + 1}]/div[2]/form/div[3]/div[1]"
+                f"/html/body/main/div/div/div/div[3]/div[2]/div[{ordinal_number + 1}]/div[2]/form/div[3]/div[1]"
             )
 
             result[current_item_name.text] = current_item_price.text

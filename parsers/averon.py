@@ -56,26 +56,27 @@ class AveronParser(Parser):
             self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
             return
 
-        for counter in range(1, return_items_count + 1):
+        for ordinal_number, item in enumerate(items):
             try:
-                current_item = items[counter]
-                current_item_info = current_item.find_element(
+                if ordinal_number == return_items_count:
+                    break
+                current_item_info = item.find_element(
                     By.XPATH,
                     f"/html/body/div[4]/div[6]/div[2]/div/div/div/div/div[2]/div[1]/div/div[4]/div/div/div["
-                    f"1]/div/div[2]/div[{counter}]/div[2]/div/div[2]"
+                    f"1]/div/div[2]/div[{ordinal_number + 1}]/div[2]/div/div[2]"
                 )
                 current_item_name = current_item_info.find_element(
                     By.XPATH,
                     f'/html/body/div[4]/div[6]/div[2]/div/div/div/div/div[2]/div[1]/div/div[4]/div/div/div['
-                    f'1]/div/div[2]/div[{counter}]/div[2]/div/div[2]/div[1]/div[2]'
+                    f'1]/div/div[2]/div[{ordinal_number + 1}]/div[2]/div/div[2]/div[1]/div[2]'
                 )
                 current_item_price = current_item_name.find_element(
                     By.XPATH,
                     f"/html/body/div[4]/div[6]/div[2]/div/div/div/div/div[2]/div[1]/div/div[4]/div/div/div["
-                    f"1]/div/div[2]/div[{counter}]/div[2]/div/div[2]/div[2]/div"
+                    f"1]/div/div[2]/div[{ordinal_number + 1}]/div[2]/div/div[2]/div[2]/div"
                 )
                 result[current_item_name.text] = current_item_price.text
-            except:
+            except selenium.common.exceptions.NoSuchElementException:
                 result[current_item_name.text] = 'Нет в наличии'
                 continue
         self.last_results = result
