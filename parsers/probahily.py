@@ -4,14 +4,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 from chrome_create_and_configurate import chrome_configuration
-
-SITE_URL = "https://xn--80abwmlfh7b4c.xn--p1ai/"
+from settings import PROBAHILY_SITE_URL as SITE_URL
 
 
 def parse_names_and_prices(to_search: str, return_items_count: int) -> str:
     """Базовая парсинговая функция возвращающая имя и цены."""
     # запсукаем бразер с сайтом пробахилы.рф
-    browser = chrome_configuration()
+    browser = chrome_configuration(headless=True)
     browser.get(SITE_URL)
     # ищем форму поиска и вводим наименование
     find_form = browser.find_element(
@@ -19,13 +18,14 @@ def parse_names_and_prices(to_search: str, return_items_count: int) -> str:
         "/html/body/header/div[1]/div[2]/div/form/input"
     )
     find_form.send_keys(to_search)
-    # находим кнопку поиска, ждем пока она станет кликабельна и нажимаем.
-    find_button = browser.find_element(
-        By.XPATH,
-        "/html/body/header/div[1]/div[2]/div/form/button"
-    )
-    WebDriverWait(browser, 10).until(EC.element_to_be_clickable(find_button)).click()
-
+    find_form.submit()
+    # # находим кнопку поиска, ждем пока она станет кликабельна и нажимаем.
+    # find_button = browser.find_element(
+    #     By.XPATH,
+    #     "/html/body/header/div[1]/div[2]/div/form/button"
+    # )
+    # WebDriverWait(browser, 10).until(EC.element_to_be_clickable(find_button)).click()
+    browser.implicitly_wait(10)
     # находим результаты поиска на странице.
     find_results = browser.find_element(
         By.XPATH,
