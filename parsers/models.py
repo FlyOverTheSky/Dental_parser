@@ -1,5 +1,3 @@
-from settings import PARSER_DIR
-import os
 from chrome_create_and_configurate import chrome_configuration
 
 

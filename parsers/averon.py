@@ -1,9 +1,7 @@
 import selenium.common.exceptions
-from pprint import pprint
 
 from selenium.webdriver.common.by import By
 
-from chrome_create_and_configurate import chrome_configuration
 from parsers.models import Parser
 from settings import AVERON_SITE_URL as SITE_URL
 

@@ -1,11 +1,12 @@
+import json
 from fastapi import FastAPI
 from pydantic import BaseModel
 import redis.asyncio as redis
-import json
-from googletrans import Translator
 
 from parsers.probahily import ProbahilyParser
 from parsers.averon import AveronParser
+from settings import *
+
 
 app = FastAPI()
 parsers_list = []
@@ -38,8 +39,8 @@ async def parse_item(parse_request: ParseRequest):
     search_results = {}
 
     redis_connection = redis.Redis(
-        host='127.0.0.1',
-        port=6379,
+        host=REDIS_HOST,
+        port=REDIS_PORT,
     )
     cache_key = parse_request.item_name
 
