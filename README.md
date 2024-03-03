@@ -28,6 +28,7 @@ uvicorn app:app
 ```
 
 ### Документация
+- /parse | request body: (string)item_name - наименование для поиска, (int)count_to_search - количество результатов
 - /swagger
 - /redoc
 
