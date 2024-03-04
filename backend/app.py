@@ -43,6 +43,7 @@ async def parse_item(parse_request: ParseRequest):
     redis_connection = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
+        password=REDIS_PASSWORD,
     )
     cache_key = parse_request.item_name
 

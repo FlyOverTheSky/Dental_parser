@@ -6,6 +6,7 @@ load_dotenv()
 
 REDIS_HOST = os.getenv("REDIS_HOST", '127.0.0.1')
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "redis_pass")
 
 PARSER_DIR = "parsers"
 AVERON_SITE_URL = "https://averon-td.ru/"
