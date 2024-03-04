@@ -8,23 +8,12 @@
 - Redis
 
 ## Использование
-Установить и запустить redis-сервер для кэширования
-
-Запустить fastapi-сервер (в инструкции пример на uvicorn):
-
-
 ```
 git clone git@github.com:FlyOverTheSky/Dental_parser.git
 ```
 
 ```
-python -m venv venv
-
-sourve venv/Scripts/activate
-
-pip install -r requirements.txt
-
-uvicorn app:app
+docker compose up
 ```
 
 ### Документация
@@ -37,3 +26,5 @@ uvicorn app:app
 - Настроен парсер для сайта Averon
 - Создан интерфейс на Fastapi
 - Подключен redis для кэширования результатов
+- Настроены контейнеры
+- Написан docker-compose
