@@ -3,8 +3,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-from parsers.models import Parser
-from settings import PROBAHILY_SITE_URL as SITE_URL
+
+from backend.parsers.models import Parser
+from backend.settings import PROBAHILY_SITE_URL as SITE_URL
 
 
 class ProbahilyParser(Parser):
@@ -38,7 +39,7 @@ class ProbahilyParser(Parser):
             # находим результаты поиска на странице.
             find_results = self.browser.find_element(
                 By.XPATH,
-                "/html/body/main/div/div/div/div[3]/div[2]",
+                "/html/body/main/div/div/div[3]/div[2]/div[1]",
             )
             # ждем пока на страницы отобразяться результаты и записываем их в items.
             WebDriverWait(self.browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "products__item")))
@@ -46,7 +47,7 @@ class ProbahilyParser(Parser):
                 By.TAG_NAME,
                 "div",
             )
-        except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.TimeoutException):
+        except selenium.common.exceptions.NoSuchElementException:
             self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
             return
         # создаем словарь с результатми поиска
@@ -58,13 +59,12 @@ class ProbahilyParser(Parser):
                 break
             current_item_name = item.find_element(
                 By.XPATH,
-                f"/html/body/main/div/div/div/div[3]/div[2]/div[{ordinal_number + 1}]/a/span[2]/span[1]"
+                f"/html/body/main/div/div/div[3]/div[2]/div[1]/div[{ordinal_number + 1}]/a/span[2]/span[1]"
             )
             current_item_price = item.find_element(
                 By.XPATH,
-                f"/html/body/main/div/div/div/div[3]/div[2]/div[{ordinal_number + 1}]/div[2]/form/div[3]/div[1]"
+                f"/html/body/main/div/div/div[3]/div[2]/div[1]/div[{ordinal_number + 1}]/div/form/div[1]/div[1]"
             )
-
             result[current_item_name.text] = current_item_price.text
         self.last_results = result
         return

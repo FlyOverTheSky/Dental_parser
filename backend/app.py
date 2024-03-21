@@ -1,3 +1,4 @@
+import asyncio
 import json
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -46,26 +47,36 @@ async def parse_item(parse_request: ParseRequest):
         password=REDIS_PASSWORD,
     )
     cache_key = parse_request.item_name
+    loop_for_parsers = asyncio.new_event_loop()
+    parsers_tasks_list = []
+    try:
+        for parser in parsers_list:
+            # TODO: Переводить имя на англ для удобства проверки redis
+            cached_results = await get_cached_items(
+                redis_connection=redis_connection,
+                item_name=cache_key,
+                items_count=parse_request.count_to_search,
+                company_name=parser.company_name
+            )
 
-    for parser in parsers_list:
-        # TODO: Переводить имя на англ для удобства проверки redis
-        cached_results = await get_cached_items(
-            redis_connection=redis_connection,
-            item_name=cache_key,
-            items_count=parse_request.count_to_search,
-            company_name=parser.company_name
-        )
+            # Если в кэше есть нужные наименования
+            if cached_results:
+                search_results[parser.company_name] = parser.last_results
+                continue
 
-        # Если в кэше есть нужные наименования
-        if cached_results:
-            search_results[parser.company_name] = parser.last_results
-            continue
-        # Если в кэше нет данных, то запускаем парсер.
-        parser.parse_names_and_prices(
-            to_search=parse_request.item_name,
-            return_items_count=parse_request.count_to_search
-        )
-        search_results[parser.company_name] = parser.last_results
+            # Если в кэше нет данных, то запускаем парсер.
+            task = loop_for_parsers.create_task(
+                parser.parse_names_and_prices(
+                    to_search=parse_request.item_name,
+                    return_items_count=parse_request.count_to_search
+                )
+            )
+            parsers_tasks_list.append(task)
+        tasks_group = asyncio.gather(*parsers_tasks_list)
+        loop_for_parsers.run_until_complete(tasks_group)
+        search_results = [parser.last_results for parser in parsers_list]
+    finally:
+        loop_for_parsers.close()
 
     # Кэшируем результаты поиска
     await redis_connection.setex(
