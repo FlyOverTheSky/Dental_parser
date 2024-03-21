@@ -1,4 +1,4 @@
-from chrome_create_and_configurate import chrome_configuration
+from backend.chrome_create_and_configurate import chrome_configuration
 
 
 class Parser:

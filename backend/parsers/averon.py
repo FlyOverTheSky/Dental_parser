@@ -2,8 +2,8 @@ import selenium.common.exceptions
 
 from selenium.webdriver.common.by import By
 
-from parsers.models import Parser
-from settings import AVERON_SITE_URL as SITE_URL
+from backend.parsers.models import Parser
+from backend.settings import AVERON_SITE_URL as SITE_URL
 
 
 class AveronParser(Parser):
@@ -13,7 +13,7 @@ class AveronParser(Parser):
             site_url=SITE_URL
         )
 
-    def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
+    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
         """Базовая парсинговая функция возвращающая наименования и цены."""
         # запсукаем бразер с сайтом пробахилы.рф
         self.browser.get(self.site_url)
@@ -77,4 +77,6 @@ class AveronParser(Parser):
             except selenium.common.exceptions.NoSuchElementException:
                 result[current_item_name.text] = 'Нет в наличии'
                 continue
+        result = {self.company_name: result}
         self.last_results = result
+        return result

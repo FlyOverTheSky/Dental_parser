@@ -19,7 +19,7 @@ class ProbahilyParser(Parser):
             site_url=SITE_URL
         )
 
-    def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
+    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
         """Базовая парсинговая функция возвращающая имя и цены."""
         # запсукаем бразер с сайтом пробахилы.рф
         self.browser.get(self.site_url)
@@ -70,5 +70,6 @@ class ProbahilyParser(Parser):
                 f"/html/body/main/div/div/div[3]/div[2]/div[1]/div[{ordinal_number + 1}]/div/form/div[1]/div[1]"
             )
             result[current_item_name.text] = current_item_price.text
+        result = {self.company_name: result}
         self.last_results = result
-        return
+        return result
