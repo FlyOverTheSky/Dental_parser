@@ -8,9 +8,6 @@ services:
       - REDIS_HOST="127.0.0.1"
       - REDIS_PASSWORD="redis_pass"
       - REDIS_PORT=6379
-#    volumes:
-#      - /path/to/local/dаta:/root/redis
-#      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
     # КОСТЫЛЬ тк возникает ошибка auth
     command: redis-server --requirepass redis_pass
   backend:

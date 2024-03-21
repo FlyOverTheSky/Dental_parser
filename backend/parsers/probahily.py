@@ -1,9 +1,13 @@
+import os
+import sys
+
 import selenium.common.exceptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
 from backend.parsers.models import Parser
 from backend.settings import PROBAHILY_SITE_URL as SITE_URL
 
