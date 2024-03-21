@@ -19,7 +19,7 @@ class ProbahilyParser(Parser):
             site_url=SITE_URL
         )
 
-    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
+    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> dict:
         """Базовая парсинговая функция возвращающая имя и цены."""
         # запсукаем бразер с сайтом пробахилы.рф
         self.browser.get(self.site_url)
@@ -38,6 +38,9 @@ class ProbahilyParser(Parser):
         )
         WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable(find_button)).click()
 
+        # создаем словарь с результатми поиска
+        result = {}
+
         # try для случая, если результатов поиска нет
         try:
             # находим результаты поиска на странице.
@@ -52,10 +55,15 @@ class ProbahilyParser(Parser):
                 "div",
             )
         except selenium.common.exceptions.NoSuchElementException:
-            self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
-            return
-        # создаем словарь с результатми поиска
-        result = {}
+            result = {
+                self.company_name:
+                    {
+                        to_search:
+                         f"Такого наименования нет на сайте {self.company_name}"
+                    }
+            }
+            self.last_results = result
+            return result
 
         # проходимся по items и формируем словарь для вывода
         for ordinal_number, item in enumerate(items):

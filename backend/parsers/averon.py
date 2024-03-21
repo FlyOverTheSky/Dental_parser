@@ -13,7 +13,7 @@ class AveronParser(Parser):
             site_url=SITE_URL
         )
 
-    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> str:
+    async def parse_names_and_prices(self, to_search: str, return_items_count: int) -> dict:
         """Базовая парсинговая функция возвращающая наименования и цены."""
         # запсукаем бразер с сайтом пробахилы.рф
         self.browser.get(self.site_url)
@@ -51,8 +51,15 @@ class AveronParser(Parser):
                 "div",
             )
         except selenium.common.exceptions.NoSuchElementException:
-            self.last_results = {to_search: f"Такого наименования нет на сайте {self.company_name}"}
-            return
+            result = {
+                self.company_name:
+                    {
+                        to_search:
+                            f"Такого наименования нет на сайте {self.company_name}"
+                    }
+            }
+            self.last_results = result
+            return result
 
         for ordinal_number, item in enumerate(items):
             try:
